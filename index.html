@@ -113,11 +113,24 @@
 
       .hero {
         min-height: calc(100vh - 72px);
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
         display: grid;
-        grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+        grid-template-columns: 1fr;
         align-items: center;
         gap: 2.5rem;
-        padding: 2rem 4rem 4rem 7rem;
+        padding: 2rem max(32px, calc((100vw - 1200px) / 2 + 32px)) 4rem
+          max(32px, calc((100vw - 1200px) / 2 + 7rem));
+        background:
+          linear-gradient(
+            135deg,
+            rgba(16, 12, 9, 0.22) 0%,
+            rgba(16, 12, 9, 0.12) 35%,
+            rgba(16, 12, 9, 0.04) 100%
+          ),
+          url("assets/images/hero-background.jpg") center center / cover no-repeat;
+        border-radius: 0 0 42px 42px;
+        overflow: hidden;
       }
 
       .hero__text {
@@ -125,6 +138,12 @@
         text-align: right;
         align-self: center;
         padding-top: 1.5rem;
+        padding: 1.6rem 1.75rem;
+        max-width: 34rem;
+        border-radius: 28px;
+        background: rgba(72, 49, 32, 0.72);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
       }
 
       .hero__text p {
@@ -140,62 +159,12 @@
         font-size: clamp(0.88rem, 1.35vw, 1.08rem);
         font-weight: 400;
         line-height: 1.5;
-      }
-
-      .hero__visual {
-        position: relative;
-        min-height: 460px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .hero-gif-card {
-        position: relative;
-        width: min(38vw, 460px);
-        padding: 1rem;
-        border-radius: 32px;
-        background: rgba(255, 248, 241, 0.95);
-        box-shadow: 0 26px 60px rgba(102, 43, 0, 0.24);
-        transform: rotate(-3deg);
-      }
-
-      .hero-chip {
-        display: inline-flex;
-        align-items: center;
-        padding: 0.45rem 0.8rem;
-        border-radius: 999px;
-        background: rgba(247, 127, 22, 0.14);
-        color: #ab4f04;
-        font-size: 0.82rem;
-        font-weight: 800;
-      }
-
-      .hero-gif-frame {
-        margin-top: 0.9rem;
-        border-radius: 24px;
-        overflow: hidden;
-        background: #ffffff;
-      }
-
-      .hero-gif-image {
-        display: block;
-        width: 100%;
-        height: auto;
-        object-fit: cover;
+        color: rgba(255, 255, 255, 0.94);
       }
 
       .hero--ltr .hero__text {
         direction: ltr;
         text-align: left;
-      }
-
-      .hero--ltr .hero__visual {
-        order: 2;
-      }
-
-      .hero--ltr .hero__text {
-        order: 1;
       }
 
       .details-section {
@@ -400,18 +369,18 @@
         padding: 0.95rem 1.2rem;
         border: 0;
         border-radius: 18px;
-        background: linear-gradient(135deg, #ff8b1e 0%, #ef6f00 100%);
+        background: #f77f16;
         color: #ffffff;
         font: inherit;
         font-weight: 800;
         cursor: pointer;
-        box-shadow: 0 14px 28px rgba(239, 111, 0, 0.24);
+        box-shadow: 0 14px 28px rgba(247, 127, 22, 0.24);
         transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
       }
 
       .join-submit:hover {
         transform: translateY(-1px);
-        box-shadow: 0 18px 30px rgba(239, 111, 0, 0.28);
+        box-shadow: 0 18px 30px rgba(247, 127, 22, 0.28);
       }
 
       .join-submit:active {
@@ -434,6 +403,56 @@
         display: block;
       }
 
+      .site-footer {
+        background: #ffffff;
+        color: #5c4638;
+        border-top: 1px solid rgba(92, 70, 56, 0.12);
+      }
+
+      .site-footer__inner {
+        width: min(1200px, 100%);
+        margin: 0 auto;
+        padding: 1.3rem 2rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+      }
+
+      .site-footer__copyright {
+        font-size: 0.95rem;
+        line-height: 1.4;
+      }
+
+      .site-footer__nav {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2.25rem;
+        flex-wrap: wrap;
+      }
+
+      .site-footer__link {
+        color: #5c4638;
+        font-size: 0.95rem;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .site-footer__link:hover {
+        text-decoration: underline;
+      }
+
+      .site-footer__brand {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: #1f1f1f;
+      }
+
+      body.site--ltr .site-footer__inner {
+        direction: ltr;
+      }
+
       .cta-section {
         background: #ffffff;
         padding: 2rem 2rem 6rem;
@@ -445,7 +464,7 @@
         min-height: 520px;
         margin: 0 auto;
         border-radius: 42px;
-        background: #ff8612;
+        background: #f77f16;
         overflow: visible;
       }
 
@@ -528,8 +547,8 @@
         }
 
         .hero {
-          grid-template-columns: 1fr;
           gap: 1.5rem;
+          margin-left: calc(50% - 50vw);
           padding: 1.5rem 1.25rem 2.5rem;
           min-height: auto;
         }
@@ -554,7 +573,7 @@
         .hero__text {
           text-align: center;
           align-self: auto;
-          padding-top: 0;
+          padding: 1.3rem 1.2rem;
         }
 
         .hero__text p {
@@ -563,17 +582,6 @@
 
         .hero__subtext {
           max-width: none;
-        }
-
-        .hero__visual {
-          order: 2;
-          min-height: 320px;
-          width: min(100%, 460px);
-          margin: 0 auto;
-        }
-
-        .hero-gif-card {
-          width: min(72vw, 360px);
         }
 
         .details-section {
@@ -614,6 +622,12 @@
           padding: 1rem 1.5rem 4rem;
         }
 
+        .site-footer__inner {
+          padding: 1.2rem 1.5rem 1.4rem;
+          flex-direction: column;
+          text-align: center;
+        }
+
         .cta-card {
           min-height: auto;
         }
@@ -632,10 +646,36 @@
           text-align: center;
         }
 
+        body.site--ltr .cta-content {
+          padding: 2.4rem 2rem 2.8rem;
+          text-align: left;
+          align-items: flex-start;
+        }
+
+        body.site--ltr .cta-title,
+        body.site--ltr .cta-description {
+          max-width: 19rem;
+        }
+
+        body.site--ltr .cta-title {
+          font-size: clamp(1.8rem, 6.8vw, 2.35rem);
+          line-height: 1.05;
+          text-wrap: balance;
+        }
+
+        body.site--ltr .cta-description {
+          font-size: 1.02rem;
+          line-height: 1.5;
+        }
+
         .cta-store-row {
           justify-content: center;
           flex-wrap: wrap;
           transform: none;
+        }
+
+        body.site--ltr .cta-store-row {
+          justify-content: flex-start;
         }
       }
 
@@ -664,15 +704,6 @@
           font-size: clamp(1.6rem, 8vw, 2.35rem);
         }
 
-        .hero__visual {
-          min-height: 250px;
-        }
-
-        .hero-gif-card {
-          width: min(78vw, 300px);
-          padding: 0.8rem;
-        }
-
         .join-form-card {
           padding: 1.35rem;
           border-radius: 22px;
@@ -680,6 +711,19 @@
 
         .cta-store-badge {
           width: 142px;
+        }
+
+        body.site--ltr .cta-content {
+          padding-inline: 1.2rem;
+        }
+
+        body.site--ltr .cta-title,
+        body.site--ltr .cta-description {
+          max-width: none;
+        }
+
+        body.site--ltr .cta-title {
+          font-size: clamp(1.7rem, 8.2vw, 2.1rem);
         }
       }
     </style>
@@ -709,18 +753,6 @@
         </div>
       </header>
       <main class="hero" id="hero">
-        <div class="hero__visual" aria-hidden="true">
-          <div class="hero-gif-card">
-            <span class="hero-chip" id="hero-real-chip">מה שבאמת מגיע</span>
-            <div class="hero-gif-frame">
-              <img
-                class="hero-gif-image"
-                src="assets/images/hero-reveal.gif"
-                alt=""
-              />
-            </div>
-          </div>
-        </div>
         <div class="hero__text">
           <p id="hero-text">שוב לא יודעים מה להזמין לצהריים?</p>
           <div class="hero__subtext" id="hero-subtext">
@@ -856,6 +888,26 @@
       </div>
     </section>
 
+    <footer class="site-footer">
+      <div class="site-footer__inner">
+        <div class="site-footer__copyright" id="footer-copyright">
+          © 2026 DishGuru. All rights reserved.
+        </div>
+        <nav class="site-footer__nav">
+          <a class="site-footer__link" id="footer-contact" href="mailto:support@dishguru.app">
+            Contact Us
+          </a>
+          <a class="site-footer__link" id="footer-terms" href="#">
+            Terms of Service
+          </a>
+          <a class="site-footer__link" id="footer-privacy" href="#">
+            Privacy Policy
+          </a>
+        </nav>
+        <div class="site-footer__brand">DishGuru</div>
+      </div>
+    </footer>
+
     <script>
       const heroText = document.getElementById("hero-text");
       const heroSubtext = document.getElementById("hero-subtext");
@@ -864,9 +916,12 @@
       const languageButtons = document.querySelectorAll("[data-language]");
       const heroTextContainer = heroText.parentElement;
       const hero = document.getElementById("hero");
-      const heroRealChip = document.getElementById("hero-real-chip");
       const ctaTitle = document.getElementById("cta-title");
       const ctaDescription = document.getElementById("cta-description");
+      const footerCopyright = document.getElementById("footer-copyright");
+      const footerContact = document.getElementById("footer-contact");
+      const footerTerms = document.getElementById("footer-terms");
+      const footerPrivacy = document.getElementById("footer-privacy");
       const joinForm = document.getElementById("join-form");
       const joinSuccess = document.getElementById("join-success");
       const companyNameInput = document.getElementById("company-name");
@@ -926,7 +981,6 @@
           hero: "Don't know what to order?",
           heroSubtext:
             "Share real dish photos with coworkers and put an end to lunch ordering misses.",
-          heroRealChip: "What actually arrives",
           details: {
             title1: "How it works",
             title2: "What the app does",
@@ -947,6 +1001,15 @@
           ctaTitle: "The dishes you love, without surprises.",
           ctaDescription:
             "Download the app to see exactly how a dish will look before placing your next order.",
+          footer: {
+            copyright: "© 2026 DishGuru. All rights reserved.",
+            contact: "Contact Us",
+            terms: "Terms of Service",
+            privacy: "Privacy Policy",
+            contactHref: "mailto:support@dishguru.app",
+            termsHref: "https://termsen.dishguru.app/index_en.html#terms",
+            privacyHref: "https://termsen.dishguru.app/index_en.html#privacy"
+          },
           joinEyebrow: "Join the service",
           joinTitle: "Want to bring DishGuru to your company?",
           joinDescription:
@@ -984,7 +1047,6 @@
           hero: "שוב לא יודעים מה להזמין לצהריים?",
           heroSubtext:
             "משתפים תמונות של מנות בין החברים במשרד ושמים קץ ל\"נפילות\"",
-          heroRealChip: "מה שבאמת מגיע",
           details: {
             title1: "איך זה עובד?",
             title2: "מה האפליקציה עושה?",
@@ -1005,6 +1067,15 @@
           ctaTitle: "המנות שאתם אוהבים, בלי הפתעות.",
           ctaDescription:
             "הורידו את האפליקציה כדי לראות בדיוק איך המנה תיראה לפני שמבצעים את ההזמנה הבאה.",
+          footer: {
+            copyright: "© 2026 DishGuru. כל הזכויות שמורות.",
+            contact: "צרו קשר",
+            terms: "תנאי שימוש",
+            privacy: "מדיניות פרטיות",
+            contactHref: "mailto:support@dishguru.app",
+            termsHref: "https://termsheb.dishguru.app#terms",
+            privacyHref: "https://termsheb.dishguru.app#privacy"
+          },
           joinEyebrow: "הצטרפו לשירות",
           joinTitle: "רוצים לצרף את החברה שלכם ל-DishGuru?",
           joinDescription:
@@ -1088,6 +1159,17 @@
         });
       }
 
+      function applyFooterCopy(language) {
+        const copy = translationContent[language].footer;
+        footerCopyright.textContent = copy.copyright;
+        footerContact.textContent = copy.contact;
+        footerTerms.textContent = copy.terms;
+        footerPrivacy.textContent = copy.privacy;
+        footerContact.href = copy.contactHref;
+        footerTerms.href = copy.termsHref;
+        footerPrivacy.href = copy.privacyHref;
+      }
+
       function showFieldError(fieldConfig, message) {
         fieldConfig.error.textContent = message;
         fieldConfig.input.classList.add("is-invalid");
@@ -1132,12 +1214,12 @@
 
           heroText.textContent = translationContent[language].hero;
           heroSubtext.textContent = translationContent[language].heroSubtext;
-          heroRealChip.textContent = translationContent[language].heroRealChip;
           ctaTitle.textContent = translationContent[language].ctaTitle;
           ctaDescription.textContent = translationContent[language].ctaDescription;
           appStoreBadge.src = appStoreBadges[language];
           googlePlayBadge.src = googlePlayBadges[language];
           applyDetailsCopy(language);
+          applyFooterCopy(language);
           applyJoinCopy(language);
 
           appStoreBadge.alt =
@@ -1223,6 +1305,7 @@
       });
 
       applyDetailsCopy(currentLanguage);
+      applyFooterCopy(currentLanguage);
       applyJoinCopy(currentLanguage);
       hero.classList.remove("hero--ltr");
     </script>
