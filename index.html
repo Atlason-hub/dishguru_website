@@ -971,6 +971,8 @@
           submit: "Send request",
           success:
             "Thanks, your request was sent successfully. We'll reach out soon.",
+          submitError:
+            "Something went wrong while sending the request. Please try again.",
           errors: {
             companyName: "Please enter your company name.",
             contactName: "Please enter a contact name.",
@@ -1027,6 +1029,8 @@
           submit: "שלחו בקשה",
           success:
             "תודה, הבקשה נשלחה בהצלחה. נחזור אליכם בהקדם.",
+          submitError:
+            "אירעה שגיאה בשליחת הבקשה. נסו שוב בעוד רגע.",
           errors: {
             companyName: "נא להזין את שם החברה.",
             contactName: "נא להזין שם איש קשר.",
@@ -1162,7 +1166,7 @@
         });
       });
 
-      joinForm.addEventListener("submit", (event) => {
+      joinForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
         const isValid = fieldConfigs.every((fieldConfig) => validateField(fieldConfig));
@@ -1173,10 +1177,46 @@
           return;
         }
 
-        joinSuccess.textContent = translationContent[currentLanguage].success;
-        joinSuccess.classList.add("is-visible");
-        joinForm.reset();
-        fieldConfigs.forEach(clearFieldError);
+        joinSuccess.classList.remove("is-visible");
+        joinSuccess.textContent = "";
+
+        try {
+          const response = await fetch("/api/join", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              companyName: companyNameInput.value.trim(),
+              contactName: contactNameInput.value.trim(),
+              contactEmail: contactEmailInput.value.trim(),
+              language: currentLanguage
+            })
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            const fieldConfig = fieldConfigs.find((field) => field.key === data.field);
+
+            if (fieldConfig && data.message) {
+              showFieldError(fieldConfig, data.message);
+            } else {
+              joinSuccess.textContent = translationContent[currentLanguage].submitError;
+              joinSuccess.classList.add("is-visible");
+            }
+
+            return;
+          }
+
+          joinSuccess.textContent = translationContent[currentLanguage].success;
+          joinSuccess.classList.add("is-visible");
+          joinForm.reset();
+          fieldConfigs.forEach(clearFieldError);
+        } catch {
+          joinSuccess.textContent = translationContent[currentLanguage].submitError;
+          joinSuccess.classList.add("is-visible");
+        }
       });
 
       applyDetailsCopy(currentLanguage);
