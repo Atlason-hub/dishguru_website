@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="he">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DishGuru</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body,
+      input,
+      button,
+      textarea,
+      select {
+        margin: 0;
+        font-family: "Heebo", Arial, sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        background: #f77f16;
+        color: #ffffff;
+      }
+
+      body.site--ltr {
+        direction: ltr;
+      }
+
+      .page {
+        width: min(1200px, 100%);
+        margin: 0 auto;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        padding: 12px max(32px, calc((100vw - 1200px) / 2 + 32px)) 12px
+          max(32px, calc((100vw - 1200px) / 2 + 7rem));
+        background: #ffffff;
+        border-bottom: 1px solid rgba(31, 31, 31, 0.08);
+        box-shadow: 0 10px 30px rgba(31, 31, 31, 0.08);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-left: 1rem;
+      }
+
+      .brand__icon {
+        width: 34px;
+        height: 34px;
+        object-fit: cover;
+        border-radius: 10px;
+        overflow: hidden;
+        display: block;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 1.55rem;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        color: #8f3f00;
+      }
+
+      .language-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.25rem;
+        border-radius: 999px;
+        background: #fff3e6;
+        border: 1px solid rgba(143, 63, 0, 0.12);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      }
+
+      .language-toggle__button {
+        border: 0;
+        border-radius: 999px;
+        padding: 0.55rem 0.9rem;
+        background: transparent;
+        color: #8f3f00;
+        font: inherit;
+        font-size: 0.92rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+      }
+
+      .language-toggle__button.is-active {
+        background: #ffffff;
+        color: #f77f16;
+        box-shadow: 0 8px 18px rgba(247, 127, 22, 0.18);
+      }
+
+      .hero {
+        min-height: calc(100vh - 72px);
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+        align-items: center;
+        gap: 2.5rem;
+        padding: 2rem 4rem 4rem 7rem;
+      }
+
+      .hero__text {
+        direction: rtl;
+        text-align: right;
+        align-self: center;
+        padding-top: 1.5rem;
+      }
+
+      .hero__text p {
+        margin: 0;
+        font-size: clamp(1.95rem, 3.8vw, 3.8rem);
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      .hero__subtext {
+        margin-top: 1rem;
+        max-width: 28rem;
+        font-size: clamp(0.88rem, 1.35vw, 1.08rem);
+        font-weight: 400;
+        line-height: 1.5;
+      }
+
+      .hero__visual {
+        position: relative;
+        min-height: 460px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .hero-gif-card {
+        position: relative;
+        width: min(38vw, 460px);
+        padding: 1rem;
+        border-radius: 32px;
+        background: rgba(255, 248, 241, 0.95);
+        box-shadow: 0 26px 60px rgba(102, 43, 0, 0.24);
+        transform: rotate(-3deg);
+      }
+
+      .hero-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.45rem 0.8rem;
+        border-radius: 999px;
+        background: rgba(247, 127, 22, 0.14);
+        color: #ab4f04;
+        font-size: 0.82rem;
+        font-weight: 800;
+      }
+
+      .hero-gif-frame {
+        margin-top: 0.9rem;
+        border-radius: 24px;
+        overflow: hidden;
+        background: #ffffff;
+      }
+
+      .hero-gif-image {
+        display: block;
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+      }
+
+      .hero--ltr .hero__text {
+        direction: ltr;
+        text-align: left;
+      }
+
+      .hero--ltr .hero__visual {
+        order: 2;
+      }
+
+      .hero--ltr .hero__text {
+        order: 1;
+      }
+
+      .details-section {
+        background: #ffffff;
+        color: #1f1f1f;
+        padding: 5rem 2rem;
+      }
+
+      .details-grid {
+        width: min(1200px, 100%);
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.5rem;
+        direction: rtl;
+      }
+
+      .details-card {
+        padding: 1.6rem 1.5rem 1.7rem;
+        border-radius: 24px;
+        background: linear-gradient(180deg, #fff8f1 0%, #ffffff 100%);
+        border: 1px solid rgba(247, 127, 22, 0.16);
+        box-shadow: 0 16px 40px rgba(31, 31, 31, 0.06);
+        text-align: right;
+      }
+
+      .details-card__title {
+        margin: 0 0 1rem;
+        color: #c85f09;
+        font-size: clamp(1rem, 1.4vw, 1.2rem);
+        font-weight: 800;
+        line-height: 1.2;
+      }
+
+      .details-card__list {
+        margin: 0;
+        padding: 0 1.1rem 0 0;
+        list-style: disc;
+        display: grid;
+        gap: 0.8rem;
+      }
+
+      .details-card__item {
+        font-size: clamp(0.95rem, 1.2vw, 1.08rem);
+        line-height: 1.5;
+        padding-right: 0.15rem;
+      }
+
+      body.site--ltr .details-grid {
+        direction: ltr;
+      }
+
+      body.site--ltr .details-card {
+        text-align: left;
+      }
+
+      body.site--ltr .details-card__list {
+        padding: 0 0 0 1.1rem;
+      }
+
+      .join-section {
+        background:
+          radial-gradient(circle at top left, rgba(255, 199, 146, 0.24), transparent 30%),
+          radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.12), transparent 28%),
+          #f77f16;
+        color: #ffffff;
+        padding: 1rem 2rem 5.5rem;
+      }
+
+      .join-shell {
+        width: min(1200px, 100%);
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        gap: 2rem;
+        align-items: start;
+        direction: rtl;
+      }
+
+      body.site--ltr .join-shell {
+        direction: ltr;
+      }
+
+      .join-copy {
+        padding-top: 1.25rem;
+      }
+
+      body.site--ltr .join-copy,
+      body.site--ltr .join-form-card {
+        text-align: left;
+      }
+
+      .join-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.45rem 0.8rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.16);
+        color: #ffffff;
+        font-size: 0.9rem;
+        font-weight: 700;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+      }
+
+      .join-title {
+        margin: 1rem 0 0.9rem;
+        font-size: clamp(1.6rem, 3vw, 2.7rem);
+        line-height: 1.08;
+        color: #ffffff;
+      }
+
+      .join-description {
+        margin: 0;
+        max-width: 34rem;
+        font-size: 1rem;
+        line-height: 1.7;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .join-points {
+        margin: 1.5rem 0 0;
+        padding: 0 1.1rem 0 0;
+        display: grid;
+        gap: 0.85rem;
+        color: rgba(255, 255, 255, 0.94);
+      }
+
+      body.site--ltr .join-points {
+        padding: 0 0 0 1.1rem;
+      }
+
+      .join-form-card {
+        padding: 1.8rem;
+        border-radius: 28px;
+        background: rgba(255, 249, 244, 0.96);
+        border: 1px solid rgba(255, 224, 196, 0.4);
+        box-shadow: 0 24px 44px rgba(122, 52, 0, 0.18);
+        backdrop-filter: blur(10px);
+      }
+
+      .join-form-title {
+        margin: 0 0 0.5rem;
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #7d3600;
+      }
+
+      .join-form-subtitle {
+        margin: 0 0 1.5rem;
+        font-size: 0.98rem;
+        line-height: 1.6;
+        color: #6f6357;
+      }
+
+      .join-form {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .join-field {
+        display: grid;
+        gap: 0.45rem;
+      }
+
+      .join-label {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #7d3600;
+      }
+
+      .join-input {
+        width: 100%;
+        padding: 0.95rem 1rem;
+        border: 1px solid rgba(143, 63, 0, 0.16);
+        border-radius: 16px;
+        background: #fffdfb;
+        color: #33251c;
+        font: inherit;
+        transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+      }
+
+      .join-input:focus {
+        outline: none;
+        border-color: rgba(247, 127, 22, 0.8);
+        box-shadow: 0 0 0 4px rgba(247, 127, 22, 0.14);
+        background: #ffffff;
+      }
+
+      .join-input.is-invalid {
+        border-color: #d64933;
+        box-shadow: 0 0 0 4px rgba(214, 73, 51, 0.12);
+      }
+
+      .join-error {
+        min-height: 1.1rem;
+        font-size: 0.86rem;
+        color: #c63d28;
+      }
+
+      .join-submit {
+        margin-top: 0.35rem;
+        padding: 0.95rem 1.2rem;
+        border: 0;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #ff8b1e 0%, #ef6f00 100%);
+        color: #ffffff;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 14px 28px rgba(239, 111, 0, 0.24);
+        transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+      }
+
+      .join-submit:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 18px 30px rgba(239, 111, 0, 0.28);
+      }
+
+      .join-submit:active {
+        transform: translateY(0);
+      }
+
+      .join-success {
+        display: none;
+        margin-top: 1rem;
+        padding: 0.95rem 1rem;
+        border-radius: 16px;
+        background: #eef9ef;
+        border: 1px solid rgba(63, 151, 91, 0.22);
+        color: #24623a;
+        font-size: 0.94rem;
+        line-height: 1.5;
+      }
+
+      .join-success.is-visible {
+        display: block;
+      }
+
+      .cta-section {
+        background: #ffffff;
+        padding: 2rem 2rem 6rem;
+      }
+
+      .cta-card {
+        position: relative;
+        width: min(1280px, 100%);
+        min-height: 520px;
+        margin: 0 auto;
+        border-radius: 42px;
+        background: #ff8612;
+        overflow: visible;
+      }
+
+      .cta-phone {
+        position: absolute;
+        left: 11%;
+        top: 50%;
+        width: min(26vw, 340px);
+        height: auto;
+        transform: translateY(-50%);
+        filter: drop-shadow(0 24px 34px rgba(0, 0, 0, 0.18));
+      }
+
+      .cta-content {
+        min-height: 520px;
+        padding: 5.5rem 4rem 4rem 48%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        color: #ffffff;
+        text-align: right;
+        direction: rtl;
+      }
+
+      body.site--ltr .cta-phone {
+        left: auto;
+        right: 11%;
+      }
+
+      body.site--ltr .cta-content {
+        padding: 5.5rem 48% 4rem 4rem;
+        text-align: left;
+        direction: ltr;
+      }
+
+      .cta-title {
+        margin: 0 0 1.25rem;
+        font-size: clamp(1.65rem, 3.2vw, 3rem);
+        font-weight: 800;
+        line-height: 1.04;
+      }
+
+      .cta-description {
+        margin: 0 0 2.25rem;
+        font-size: clamp(0.95rem, 1.35vw, 1.15rem);
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.92);
+      }
+
+      .cta-store-row {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: nowrap;
+        gap: 1rem;
+        transform: translateX(34px);
+      }
+
+      body.site--ltr .cta-store-row {
+        justify-content: flex-start;
+        transform: translateX(-20px);
+      }
+
+      .cta-store-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+      }
+
+      .cta-store-badge {
+        display: block;
+        width: 160px;
+        height: auto;
+      }
+
+      @media (max-width: 900px) {
+        header {
+          margin-left: calc(50% - 50vw);
+          padding: 16px 20px;
+        }
+
+        .hero {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+          padding: 1.5rem 1.25rem 2.5rem;
+          min-height: auto;
+        }
+
+        .brand {
+          margin-left: 0;
+        }
+
+        .brand__icon {
+          width: 42px;
+          height: 42px;
+        }
+
+        h1 {
+          font-size: 1.5rem;
+        }
+
+        .language-toggle__button {
+          padding: 0.65rem 0.85rem;
+        }
+
+        .hero__text {
+          text-align: center;
+          align-self: auto;
+          padding-top: 0;
+        }
+
+        .hero__text p {
+          font-size: clamp(1.8rem, 8vw, 2.8rem);
+        }
+
+        .hero__subtext {
+          max-width: none;
+        }
+
+        .hero__visual {
+          order: 2;
+          min-height: 320px;
+          width: min(100%, 460px);
+          margin: 0 auto;
+        }
+
+        .hero-gif-card {
+          width: min(72vw, 360px);
+        }
+
+        .details-section {
+          padding: 3.5rem 1.5rem;
+        }
+
+        .details-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .join-section {
+          padding: 0.5rem 1.5rem 4rem;
+        }
+
+        .join-shell {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+
+        .join-copy {
+          padding-top: 0;
+          text-align: center;
+        }
+
+        .join-description {
+          max-width: none;
+        }
+
+        .join-points {
+          text-align: right;
+        }
+
+        body.site--ltr .join-points {
+          text-align: left;
+        }
+
+        .cta-section {
+          padding: 1rem 1.5rem 4rem;
+        }
+
+        .cta-card {
+          min-height: auto;
+        }
+
+        .cta-phone {
+          position: static;
+          display: block;
+          width: min(100%, 280px);
+          margin: -3rem auto 0;
+          transform: none;
+        }
+
+        .cta-content {
+          min-height: auto;
+          padding: 2rem 1.5rem 2.5rem;
+          text-align: center;
+        }
+
+        .cta-store-row {
+          justify-content: center;
+          flex-wrap: wrap;
+          transform: none;
+        }
+      }
+
+      @media (max-width: 640px) {
+        header {
+          flex-wrap: wrap;
+          align-items: flex-start;
+          padding-top: 10px;
+          padding-bottom: 10px;
+          padding-inline: 16px;
+        }
+
+        .brand {
+          gap: 0.7rem;
+        }
+
+        .language-toggle {
+          margin-left: auto;
+        }
+
+        .hero {
+          padding: 1rem 1rem 2rem;
+        }
+
+        .hero__text p {
+          font-size: clamp(1.6rem, 8vw, 2.35rem);
+        }
+
+        .hero__visual {
+          min-height: 250px;
+        }
+
+        .hero-gif-card {
+          width: min(78vw, 300px);
+          padding: 0.8rem;
+        }
+
+        .join-form-card {
+          padding: 1.35rem;
+          border-radius: 22px;
+        }
+
+        .cta-store-badge {
+          width: 142px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <div class="brand">
+          <img
+            class="brand__icon"
+            src="assets/icons/dishguru-icon-rounded.png?v=2"
+            alt="DishGuru icon"
+          />
+          <h1>DishGuru</h1>
+        </div>
+        <div class="language-toggle" aria-label="Language switcher">
+          <button class="language-toggle__button" type="button" data-language="en">
+            English
+          </button>
+          <button
+            class="language-toggle__button is-active"
+            type="button"
+            data-language="he"
+          >
+            עברית
+          </button>
+        </div>
+      </header>
+      <main class="hero" id="hero">
+        <div class="hero__visual" aria-hidden="true">
+          <div class="hero-gif-card">
+            <span class="hero-chip" id="hero-real-chip">מה שבאמת מגיע</span>
+            <div class="hero-gif-frame">
+              <img
+                class="hero-gif-image"
+                src="assets/images/hero-reveal.gif"
+                alt=""
+              />
+            </div>
+          </div>
+        </div>
+        <div class="hero__text">
+          <p id="hero-text">שוב לא יודעים מה להזמין לצהריים?</p>
+          <div class="hero__subtext" id="hero-subtext">
+            משתפים תמונות של מנות בין החברים במשרד ושמים קץ ל"נפילות"
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <section class="details-section">
+      <div class="details-grid">
+        <article class="details-card">
+          <h3 class="details-card__title" id="details-title-1">איך זה עובד?</h3>
+          <ul class="details-card__list">
+            <li class="details-card__item" id="details-1-item-1">מזמינים אוכל למשרד</li>
+            <li class="details-card__item" id="details-1-item-2">מצלמים את המנה באפליקציה</li>
+            <li class="details-card__item" id="details-1-item-3">משייכים למסעדה ולמנה</li>
+            <li class="details-card__item" id="details-1-item-4">בפעם הבאה רואים תמונות אמיתיות לפני שמזמינים</li>
+          </ul>
+        </article>
+
+        <article class="details-card">
+          <h3 class="details-card__title" id="details-title-2">מה האפליקציה עושה?</h3>
+          <ul class="details-card__list">
+            <li class="details-card__item" id="details-2-item-1">בונה מאגר אמיתי של מנות ממסעדות משלוחים, המבוסס על תמונות שהעובדים עצמם מעלים</li>
+            <li class="details-card__item" id="details-2-item-2">עוזרת לבחור טוב יותר ומהר יותר</li>
+            <li class="details-card__item" id="details-2-item-3">מפחיתה אכזבות מהזמנות לא מוצלחות</li>
+          </ul>
+        </article>
+
+        <article class="details-card">
+          <h3 class="details-card__title" id="details-title-3">למה זה טוב למשרדים?</h3>
+          <ul class="details-card__list">
+            <li class="details-card__item" id="details-3-item-1">בחירות חכמות יותר בהזמנות צוות</li>
+            <li class="details-card__item" id="details-3-item-2">פחות נפילות ויותר שביעות רצון</li>
+            <li class="details-card__item" id="details-3-item-3">ידע משותף שנשמר בתוך המשרד</li>
+            <li class="details-card__item" id="details-3-item-4">כל הזמנה חדשה נהיית קלה יותר</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="cta-card">
+        <img
+          class="cta-phone"
+          src="assets/images/phone-screenshot.png"
+          alt="DishGuru phone screenshot"
+        />
+        <div class="cta-content">
+          <h2 class="cta-title" id="cta-title">המנות שאתם אוהבים, בלי הפתעות.</h2>
+          <p class="cta-description" id="cta-description">
+            הורידו את האפליקציה כדי לראות בדיוק איך המנה תיראה לפני שמבצעים את ההזמנה הבאה.
+          </p>
+          <div class="cta-store-row">
+            <a
+              class="cta-store-button"
+              href="https://play.google.com/store/apps/details?id=com.dishguru.app&hl=en"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Get DishGuru on Google Play"
+            >
+              <img
+                id="google-play-badge"
+                class="cta-store-badge"
+                src="assets/badges/google-play-badge-he.png?v=3"
+                alt="זמין ב-Google Play"
+              />
+            </a>
+            <a
+              class="cta-store-button"
+              href="https://apps.apple.com/il/app/dishguru/id6763908421"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Download DishGuru on the App Store"
+            >
+              <img
+                id="app-store-badge"
+                class="cta-store-badge"
+                src="assets/badges/app-store-badge-he.svg?v=4"
+                alt="להורדה ב-App Store"
+              />
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="join-section">
+      <div class="join-shell">
+        <div class="join-copy">
+          <div class="join-eyebrow" id="join-eyebrow">הצטרפו לשירות</div>
+          <h2 class="join-title" id="join-title">רוצים לצרף את החברה שלכם ל-DishGuru?</h2>
+          <p class="join-description" id="join-description">
+            השאירו פרטים ונחזור אליכם כדי לבדוק התאמה, להציג את המוצר, ולעזור לכם להפעיל את השירות אצלכם במשרד.
+          </p>
+          <ul class="join-points" id="join-points">
+            <li>מתאים לחברות שרוצות חוויית הזמנות חכמה יותר לעובדים.</li>
+            <li>בנוי להצטרפות מהירה בלי תהליך מסובך.</li>
+            <li>עוזר להתחיל לבנות מאגר מנות אמיתי כבר מהיום הראשון.</li>
+          </ul>
+        </div>
+
+        <div class="join-form-card">
+          <h3 class="join-form-title" id="join-form-title">בקשת הצטרפות</h3>
+          <p class="join-form-subtitle" id="join-form-subtitle">
+            מלאו את הפרטים וניצור קשר בהקדם.
+          </p>
+
+          <form class="join-form" id="join-form" novalidate>
+            <div class="join-field">
+              <label class="join-label" for="company-name" id="label-company-name">שם החברה</label>
+              <input class="join-input" id="company-name" name="companyName" type="text" />
+              <div class="join-error" id="company-name-error" aria-live="polite"></div>
+            </div>
+
+            <div class="join-field">
+              <label class="join-label" for="contact-name" id="label-contact-name">שם איש קשר</label>
+              <input class="join-input" id="contact-name" name="contactName" type="text" />
+              <div class="join-error" id="contact-name-error" aria-live="polite"></div>
+            </div>
+
+            <div class="join-field">
+              <label class="join-label" for="contact-email" id="label-contact-email">אימייל ליצירת קשר</label>
+              <input class="join-input" id="contact-email" name="contactEmail" type="email" />
+              <div class="join-error" id="contact-email-error" aria-live="polite"></div>
+            </div>
+
+            <button class="join-submit" id="join-submit" type="submit">שלחו בקשה</button>
+            <div class="join-success" id="join-success" aria-live="polite"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      const heroText = document.getElementById("hero-text");
+      const heroSubtext = document.getElementById("hero-subtext");
+      const appStoreBadge = document.getElementById("app-store-badge");
+      const googlePlayBadge = document.getElementById("google-play-badge");
+      const languageButtons = document.querySelectorAll("[data-language]");
+      const heroTextContainer = heroText.parentElement;
+      const hero = document.getElementById("hero");
+      const heroRealChip = document.getElementById("hero-real-chip");
+      const ctaTitle = document.getElementById("cta-title");
+      const ctaDescription = document.getElementById("cta-description");
+      const joinForm = document.getElementById("join-form");
+      const joinSuccess = document.getElementById("join-success");
+      const companyNameInput = document.getElementById("company-name");
+      const contactNameInput = document.getElementById("contact-name");
+      const contactEmailInput = document.getElementById("contact-email");
+
+      const joinCopyElements = {
+        eyebrow: document.getElementById("join-eyebrow"),
+        title: document.getElementById("join-title"),
+        description: document.getElementById("join-description"),
+        points: document.getElementById("join-points"),
+        formTitle: document.getElementById("join-form-title"),
+        formSubtitle: document.getElementById("join-form-subtitle"),
+        labelCompanyName: document.getElementById("label-company-name"),
+        labelContactName: document.getElementById("label-contact-name"),
+        labelContactEmail: document.getElementById("label-contact-email"),
+        submit: document.getElementById("join-submit")
+      };
+
+      const detailsContentElements = {
+        title1: document.getElementById("details-title-1"),
+        title2: document.getElementById("details-title-2"),
+        title3: document.getElementById("details-title-3"),
+        item11: document.getElementById("details-1-item-1"),
+        item12: document.getElementById("details-1-item-2"),
+        item13: document.getElementById("details-1-item-3"),
+        item14: document.getElementById("details-1-item-4"),
+        item21: document.getElementById("details-2-item-1"),
+        item22: document.getElementById("details-2-item-2"),
+        item23: document.getElementById("details-2-item-3"),
+        item31: document.getElementById("details-3-item-1"),
+        item32: document.getElementById("details-3-item-2"),
+        item33: document.getElementById("details-3-item-3"),
+        item34: document.getElementById("details-3-item-4")
+      };
+
+      const fieldConfigs = [
+        {
+          input: companyNameInput,
+          error: document.getElementById("company-name-error"),
+          key: "companyName"
+        },
+        {
+          input: contactNameInput,
+          error: document.getElementById("contact-name-error"),
+          key: "contactName"
+        },
+        {
+          input: contactEmailInput,
+          error: document.getElementById("contact-email-error"),
+          key: "contactEmail"
+        }
+      ];
+
+      const translationContent = {
+        en: {
+          hero: "Don't know what to order?",
+          heroSubtext:
+            "Share real dish photos with coworkers and put an end to lunch ordering misses.",
+          heroRealChip: "What actually arrives",
+          details: {
+            title1: "How it works",
+            title2: "What the app does",
+            title3: "Why it works for offices",
+            item11: "Order food to the office",
+            item12: "Take a photo of the dish in the app",
+            item13: "Attach it to the restaurant and exact dish",
+            item14: "Next time, see real photos before placing the order",
+            item21:
+              "Builds a real database of takeaway dishes, based on photos uploaded by employees themselves",
+            item22: "Helps people choose better and faster",
+            item23: "Reduces disappointment from bad orders",
+            item31: "Smarter team lunch decisions",
+            item32: "Fewer misses and happier employees",
+            item33: "Shared knowledge that stays inside the company",
+            item34: "Every new order becomes easier"
+          },
+          ctaTitle: "The dishes you love, without surprises.",
+          ctaDescription:
+            "Download the app to see exactly how a dish will look before placing your next order.",
+          joinEyebrow: "Join the service",
+          joinTitle: "Want to bring DishGuru to your company?",
+          joinDescription:
+            "Leave your details and we'll get back to you to see if it's a fit, show you the product, and help you launch it in your office.",
+          joinPoints: [
+            "A great fit for companies that want a smarter lunch ordering experience for employees.",
+            "Built for a fast onboarding process without unnecessary complexity.",
+            "Helps teams start building a real dish database from day one."
+          ],
+          joinFormTitle: "Request to join",
+          joinFormSubtitle: "Fill in your details and we'll be in touch soon.",
+          labels: {
+            companyName: "Company name",
+            contactName: "Contact name",
+            contactEmail: "Contact email"
+          },
+          placeholders: {
+            companyName: "Enter your company name",
+            contactName: "Enter the contact person's name",
+            contactEmail: "name@company.com"
+          },
+          submit: "Send request",
+          success:
+            "Thanks, your request was sent successfully. We'll reach out soon.",
+          errors: {
+            companyName: "Please enter your company name.",
+            contactName: "Please enter a contact name.",
+            contactEmailRequired: "Please enter a contact email.",
+            contactEmailInvalid: "Please enter a valid email address."
+          }
+        },
+        he: {
+          hero: "שוב לא יודעים מה להזמין לצהריים?",
+          heroSubtext:
+            "משתפים תמונות של מנות בין החברים במשרד ושמים קץ ל\"נפילות\"",
+          heroRealChip: "מה שבאמת מגיע",
+          details: {
+            title1: "איך זה עובד?",
+            title2: "מה האפליקציה עושה?",
+            title3: "למה זה טוב למשרדים?",
+            item11: "מזמינים אוכל למשרד",
+            item12: "מצלמים את המנה באפליקציה",
+            item13: "משייכים למסעדה ולמנה",
+            item14: "בפעם הבאה רואים תמונות אמיתיות לפני שמזמינים",
+            item21:
+              "בונה מאגר אמיתי של מנות ממסעדות משלוחים, המבוסס על תמונות שהעובדים עצמם מעלים",
+            item22: "עוזרת לבחור טוב יותר ומהר יותר",
+            item23: "מפחיתה אכזבות מהזמנות לא מוצלחות",
+            item31: "בחירות חכמות יותר בהזמנות צוות",
+            item32: "פחות נפילות ויותר שביעות רצון",
+            item33: "ידע משותף שנשמר בתוך המשרד",
+            item34: "כל הזמנה חדשה נהיית קלה יותר"
+          },
+          ctaTitle: "המנות שאתם אוהבים, בלי הפתעות.",
+          ctaDescription:
+            "הורידו את האפליקציה כדי לראות בדיוק איך המנה תיראה לפני שמבצעים את ההזמנה הבאה.",
+          joinEyebrow: "הצטרפו לשירות",
+          joinTitle: "רוצים לצרף את החברה שלכם ל-DishGuru?",
+          joinDescription:
+            "השאירו פרטים ונחזור אליכם כדי לבדוק התאמה, להציג את המוצר, ולעזור לכם להפעיל את השירות אצלכם במשרד.",
+          joinPoints: [
+            "מתאים לחברות שרוצות חוויית הזמנות חכמה יותר לעובדים.",
+            "בנוי להצטרפות מהירה בלי תהליך מסובך.",
+            "עוזר להתחיל לבנות מאגר מנות אמיתי כבר מהיום הראשון."
+          ],
+          joinFormTitle: "בקשת הצטרפות",
+          joinFormSubtitle: "מלאו את הפרטים וניצור קשר בהקדם.",
+          labels: {
+            companyName: "שם החברה",
+            contactName: "שם איש קשר",
+            contactEmail: "אימייל ליצירת קשר"
+          },
+          placeholders: {
+            companyName: "הכניסו את שם החברה",
+            contactName: "הכניסו את שם איש הקשר",
+            contactEmail: "name@company.com"
+          },
+          submit: "שלחו בקשה",
+          success:
+            "תודה, הבקשה נשלחה בהצלחה. נחזור אליכם בהקדם.",
+          errors: {
+            companyName: "נא להזין את שם החברה.",
+            contactName: "נא להזין שם איש קשר.",
+            contactEmailRequired: "נא להזין אימייל ליצירת קשר.",
+            contactEmailInvalid: "נא להזין כתובת אימייל תקינה."
+          }
+        }
+      };
+
+      const appStoreBadges = {
+        en: "assets/badges/app-store-badge-en.svg?v=4",
+        he: "assets/badges/app-store-badge-he.svg?v=4"
+      };
+
+      const googlePlayBadges = {
+        en: "assets/badges/google-play-badge-en.png?v=3",
+        he: "assets/badges/google-play-badge-he.png?v=3"
+      };
+
+      let currentLanguage = "he";
+
+      function applyJoinCopy(language) {
+        const copy = translationContent[language];
+
+        joinCopyElements.eyebrow.textContent = copy.joinEyebrow;
+        joinCopyElements.title.textContent = copy.joinTitle;
+        joinCopyElements.description.textContent = copy.joinDescription;
+        joinCopyElements.formTitle.textContent = copy.joinFormTitle;
+        joinCopyElements.formSubtitle.textContent = copy.joinFormSubtitle;
+        joinCopyElements.labelCompanyName.textContent = copy.labels.companyName;
+        joinCopyElements.labelContactName.textContent = copy.labels.contactName;
+        joinCopyElements.labelContactEmail.textContent = copy.labels.contactEmail;
+        joinCopyElements.submit.textContent = copy.submit;
+
+        companyNameInput.placeholder = copy.placeholders.companyName;
+        contactNameInput.placeholder = copy.placeholders.contactName;
+        contactEmailInput.placeholder = copy.placeholders.contactEmail;
+
+        joinCopyElements.points.innerHTML = "";
+        copy.joinPoints.forEach((point) => {
+          const item = document.createElement("li");
+          item.textContent = point;
+          joinCopyElements.points.appendChild(item);
+        });
+
+        if (joinSuccess.classList.contains("is-visible")) {
+          joinSuccess.textContent = copy.success;
+        }
+      }
+
+      function applyDetailsCopy(language) {
+        const copy = translationContent[language].details;
+        Object.entries(copy).forEach(([key, value]) => {
+          detailsContentElements[key].textContent = value;
+        });
+      }
+
+      function showFieldError(fieldConfig, message) {
+        fieldConfig.error.textContent = message;
+        fieldConfig.input.classList.add("is-invalid");
+      }
+
+      function clearFieldError(fieldConfig) {
+        fieldConfig.error.textContent = "";
+        fieldConfig.input.classList.remove("is-invalid");
+      }
+
+      function validateField(fieldConfig) {
+        const copy = translationContent[currentLanguage];
+        const value = fieldConfig.input.value.trim();
+
+        if (!value) {
+          const message =
+            fieldConfig.key === "companyName"
+              ? copy.errors.companyName
+              : fieldConfig.key === "contactName"
+                ? copy.errors.contactName
+                : copy.errors.contactEmailRequired;
+          showFieldError(fieldConfig, message);
+          return false;
+        }
+
+        if (
+          fieldConfig.key === "contactEmail" &&
+          !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+        ) {
+          showFieldError(fieldConfig, copy.errors.contactEmailInvalid);
+          return false;
+        }
+
+        clearFieldError(fieldConfig);
+        return true;
+      }
+
+      languageButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const language = button.dataset.language;
+          currentLanguage = language;
+
+          heroText.textContent = translationContent[language].hero;
+          heroSubtext.textContent = translationContent[language].heroSubtext;
+          heroRealChip.textContent = translationContent[language].heroRealChip;
+          ctaTitle.textContent = translationContent[language].ctaTitle;
+          ctaDescription.textContent = translationContent[language].ctaDescription;
+          appStoreBadge.src = appStoreBadges[language];
+          googlePlayBadge.src = googlePlayBadges[language];
+          applyDetailsCopy(language);
+          applyJoinCopy(language);
+
+          appStoreBadge.alt =
+            language === "he" ? "להורדה ב-App Store" : "Download on the App Store";
+          googlePlayBadge.alt =
+            language === "he" ? "זמין ב-Google Play" : "Get it on Google Play";
+
+          languageButtons.forEach((item) => {
+            item.classList.toggle("is-active", item === button);
+          });
+
+          document.documentElement.lang = language;
+          document.body.classList.toggle("site--ltr", language === "en");
+          heroTextContainer.dir = language === "he" ? "rtl" : "ltr";
+          heroTextContainer.style.textAlign = language === "he" ? "right" : "left";
+          hero.classList.toggle("hero--ltr", language === "en");
+          joinForm.dir = language === "he" ? "rtl" : "ltr";
+        });
+      });
+
+      fieldConfigs.forEach((fieldConfig) => {
+        fieldConfig.input.addEventListener("input", () => {
+          if (fieldConfig.input.classList.contains("is-invalid")) {
+            validateField(fieldConfig);
+          }
+        });
+      });
+
+      joinForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const isValid = fieldConfigs.every((fieldConfig) => validateField(fieldConfig));
+
+        if (!isValid) {
+          joinSuccess.classList.remove("is-visible");
+          joinSuccess.textContent = "";
+          return;
+        }
+
+        joinSuccess.textContent = translationContent[currentLanguage].success;
+        joinSuccess.classList.add("is-visible");
+        joinForm.reset();
+        fieldConfigs.forEach(clearFieldError);
+      });
+
+      applyDetailsCopy(currentLanguage);
+      applyJoinCopy(currentLanguage);
+      hero.classList.remove("hero--ltr");
+    </script>
+  </body>
+</html>
