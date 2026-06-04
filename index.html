@@ -4,6 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DishGuru</title>
+    <meta
+      name="description"
+      content="DishGuru helps office teams see real dish photos before they order takeaway, making lunch choices smarter and reducing bad surprises."
+    />
+    <link rel="canonical" href="https://www.dishguru.app/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="DishGuru" />
+    <meta
+      property="og:description"
+      content="See how takeaway dishes really look before ordering. Built for offices, powered by real employee photos."
+    />
+    <meta property="og:url" content="https://www.dishguru.app/" />
+    <meta property="og:image" content="https://www.dishguru.app/assets/icons/favicon-192.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="DishGuru" />
+    <meta
+      name="twitter:description"
+      content="See how takeaway dishes really look before ordering. Built for offices, powered by real employee photos."
+    />
+    <meta name="twitter:image" content="https://www.dishguru.app/assets/icons/favicon-192.png" />
     <link rel="icon" href="favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/favicon-192.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -451,6 +471,59 @@
         color: #1f1f1f;
       }
 
+      .legal-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 220;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        background: rgba(19, 14, 11, 0.62);
+        backdrop-filter: blur(8px);
+      }
+
+      .legal-modal.is-open {
+        display: flex;
+      }
+
+      .legal-modal__dialog {
+        width: min(1080px, 100%);
+        height: min(82vh, 820px);
+        position: relative;
+        background: #fffdf9;
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
+      }
+
+      .legal-modal__close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        z-index: 1;
+        width: 42px;
+        height: 42px;
+        border: 0;
+        border-radius: 50%;
+        padding: 0;
+        background: rgba(245, 236, 228, 0.96);
+        color: #5c4638;
+        font: inherit;
+        font-weight: 700;
+        font-size: 1.35rem;
+        line-height: 1;
+        cursor: pointer;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+      }
+
+      .legal-modal__frame {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: #ffffff;
+      }
+
       body.site--ltr .site-footer__inner {
         direction: ltr;
       }
@@ -628,6 +701,15 @@
           padding: 1.2rem 1.5rem 1.4rem;
           flex-direction: column;
           text-align: center;
+        }
+
+        .legal-modal {
+          padding: 0.8rem;
+        }
+
+        .legal-modal__dialog {
+          height: min(86vh, 920px);
+          border-radius: 22px;
         }
 
         .cta-card {
@@ -899,16 +981,25 @@
           <a class="site-footer__link" id="footer-contact" href="mailto:support@dishguru.app">
             Contact Us
           </a>
-          <a class="site-footer__link" id="footer-terms" href="#">
+          <a class="site-footer__link" id="footer-terms" href="#" data-legal="terms">
             Terms of Service
           </a>
-          <a class="site-footer__link" id="footer-privacy" href="#">
+          <a class="site-footer__link" id="footer-privacy" href="#" data-legal="privacy">
             Privacy Policy
           </a>
         </nav>
         <div class="site-footer__brand">DishGuru</div>
       </div>
     </footer>
+
+    <div class="legal-modal" id="legal-modal" aria-hidden="true">
+      <div class="legal-modal__dialog" role="dialog" aria-modal="true" aria-label="Legal document">
+        <button class="legal-modal__close" id="legal-modal-close" type="button" aria-label="Close">
+          ×
+        </button>
+        <iframe class="legal-modal__frame" id="legal-modal-frame" title="Legal document"></iframe>
+      </div>
+    </div>
 
     <script>
       const heroText = document.getElementById("hero-text");
@@ -924,6 +1015,9 @@
       const footerContact = document.getElementById("footer-contact");
       const footerTerms = document.getElementById("footer-terms");
       const footerPrivacy = document.getElementById("footer-privacy");
+      const legalModal = document.getElementById("legal-modal");
+      const legalModalClose = document.getElementById("legal-modal-close");
+      const legalModalFrame = document.getElementById("legal-modal-frame");
       const joinForm = document.getElementById("join-form");
       const joinSuccess = document.getElementById("join-success");
       const companyNameInput = document.getElementById("company-name");
@@ -1172,6 +1266,23 @@
         footerPrivacy.href = copy.privacyHref;
       }
 
+      function openLegalModal(type) {
+        const copy = translationContent[currentLanguage].footer;
+        const url = type === "privacy" ? copy.privacyHref : copy.termsHref;
+
+        legalModalFrame.src = url;
+        legalModal.classList.add("is-open");
+        legalModal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeLegalModal() {
+        legalModal.classList.remove("is-open");
+        legalModal.setAttribute("aria-hidden", "true");
+        legalModalFrame.src = "";
+        document.body.style.overflow = "";
+      }
+
       function showFieldError(fieldConfig, message) {
         fieldConfig.error.textContent = message;
         fieldConfig.input.classList.add("is-invalid");
@@ -1303,6 +1414,27 @@
         } catch {
           joinSuccess.textContent = translationContent[currentLanguage].submitError;
           joinSuccess.classList.add("is-visible");
+        }
+      });
+
+      [footerTerms, footerPrivacy].forEach((link) => {
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          openLegalModal(link.dataset.legal);
+        });
+      });
+
+      legalModalClose.addEventListener("click", closeLegalModal);
+
+      legalModal.addEventListener("click", (event) => {
+        if (event.target === legalModal) {
+          closeLegalModal();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && legalModal.classList.contains("is-open")) {
+          closeLegalModal();
         }
       });
 
