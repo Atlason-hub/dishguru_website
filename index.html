@@ -1202,7 +1202,10 @@
             if (fieldConfig && data.message) {
               showFieldError(fieldConfig, data.message);
             } else {
-              joinSuccess.textContent = translationContent[currentLanguage].submitError;
+              joinSuccess.textContent =
+                data && data.message
+                  ? data.message
+                  : translationContent[currentLanguage].submitError;
               joinSuccess.classList.add("is-visible");
             }
 

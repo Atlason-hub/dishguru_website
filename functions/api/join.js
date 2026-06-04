@@ -20,6 +20,7 @@ export async function onRequestPost(context) {
   try {
     const { request, env } = context;
     const body = await request.json();
+    console.log("join-request: received");
 
     const companyName = String(body.companyName || "").trim();
     const contactName = String(body.contactName || "").trim();
@@ -55,6 +56,11 @@ export async function onRequestPost(context) {
     }
 
     if (!env.RESEND_API_KEY || !env.JOIN_FORM_TO_EMAIL || !env.JOIN_FORM_FROM_EMAIL) {
+      console.error("join-request: missing env vars", {
+        hasResendApiKey: Boolean(env.RESEND_API_KEY),
+        hasJoinFormToEmail: Boolean(env.JOIN_FORM_TO_EMAIL),
+        hasJoinFormFromEmail: Boolean(env.JOIN_FORM_FROM_EMAIL)
+      });
       return json(
         { ok: false, message: "Server email configuration is missing." },
         500
@@ -89,18 +95,24 @@ export async function onRequestPost(context) {
 
     if (!resendResponse.ok) {
       const errorText = await resendResponse.text();
+      console.error("join-request: resend send failed", {
+        status: resendResponse.status,
+        body: errorText
+      });
       return json(
         {
           ok: false,
-          message: "Email send failed.",
+          message: errorText || "Email send failed.",
           details: errorText
         },
         502
       );
     }
 
+    console.log("join-request: resend send succeeded");
     return json({ ok: true });
-  } catch {
+  } catch (error) {
+    console.error("join-request: unexpected error", error);
     return json(
       { ok: false, message: "Unexpected server error." },
       500
