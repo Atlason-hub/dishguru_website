@@ -1282,6 +1282,9 @@
         requestedLanguageFromUrl === "en" || requestedLanguageFromUrl === "he"
           ? requestedLanguageFromUrl
           : "he";
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+      }
 
       function prefillJoinFormFromUrl() {
         const emailFromUrl = joinQueryParams.get("email");
@@ -1299,25 +1302,28 @@
           return;
         }
 
-        const scrollTarget =
-          document.getElementById("join-eyebrow") ||
-          document.getElementById("join-request");
+        const scrollTarget = document.getElementById("join-eyebrow");
 
         if (!scrollTarget) {
           return;
         }
 
         const scrollToJoin = () => {
-          scrollTarget.scrollIntoView({
-            behavior: "auto",
-            block: "start"
+          const targetTop =
+            window.scrollY + scrollTarget.getBoundingClientRect().top - 20;
+
+          window.scrollTo({
+            top: Math.max(targetTop, 0),
+            behavior: "auto"
           });
         };
 
         window.requestAnimationFrame(scrollToJoin);
         window.setTimeout(scrollToJoin, 120);
         window.setTimeout(scrollToJoin, 450);
+        window.setTimeout(scrollToJoin, 900);
         window.addEventListener("load", scrollToJoin, { once: true });
+        window.addEventListener("pageshow", scrollToJoin, { once: true });
       }
 
       function applyLanguage(language) {
