@@ -817,7 +817,8 @@
         }
 
         body.site--ltr .cta-store-row {
-          justify-content: flex-start;
+          justify-content: center;
+          width: 100%;
         }
       }
 
@@ -983,7 +984,7 @@
       </div>
     </section>
 
-    <section class="join-section">
+    <section class="join-section" id="join-request">
       <div class="join-shell">
         <div class="join-copy">
           <div class="join-eyebrow" id="join-eyebrow">הצטרפו לשירות</div>
@@ -1275,7 +1276,79 @@
         he: "assets/badges/google-play-badge-he.png?v=3"
       };
 
-      let currentLanguage = "he";
+      const joinQueryParams = new URLSearchParams(window.location.search);
+      const requestedLanguageFromUrl = joinQueryParams.get("lang");
+      let currentLanguage =
+        requestedLanguageFromUrl === "en" || requestedLanguageFromUrl === "he"
+          ? requestedLanguageFromUrl
+          : "he";
+
+      function prefillJoinFormFromUrl() {
+        const emailFromUrl = joinQueryParams.get("email");
+
+        if (!emailFromUrl) {
+          return;
+        }
+
+        contactEmailInput.value = emailFromUrl.trim();
+        clearFieldError(fieldConfigs.find((field) => field.key === "contactEmail"));
+      }
+
+      function scrollJoinFormIntoViewIfRequested() {
+        if (!joinQueryParams.has("email") && !joinQueryParams.has("join")) {
+          return;
+        }
+
+        const scrollTarget =
+          document.getElementById("join-eyebrow") ||
+          document.getElementById("join-request");
+
+        if (!scrollTarget) {
+          return;
+        }
+
+        const scrollToJoin = () => {
+          scrollTarget.scrollIntoView({
+            behavior: "auto",
+            block: "start"
+          });
+        };
+
+        window.requestAnimationFrame(scrollToJoin);
+        window.setTimeout(scrollToJoin, 120);
+        window.setTimeout(scrollToJoin, 450);
+        window.addEventListener("load", scrollToJoin, { once: true });
+      }
+
+      function applyLanguage(language) {
+        currentLanguage = language;
+
+        heroText.textContent = translationContent[language].hero;
+        heroSubtext.textContent = translationContent[language].heroSubtext;
+        ctaTitle.textContent = translationContent[language].ctaTitle;
+        ctaDescription.textContent = translationContent[language].ctaDescription;
+        appStoreBadge.src = appStoreBadges[language];
+        googlePlayBadge.src = googlePlayBadges[language];
+        applyDetailsCopy(language);
+        applyFooterCopy(language);
+        applyJoinCopy(language);
+
+        appStoreBadge.alt =
+          language === "he" ? "להורדה ב-App Store" : "Download on the App Store";
+        googlePlayBadge.alt =
+          language === "he" ? "זמין ב-Google Play" : "Get it on Google Play";
+
+        languageButtons.forEach((item) => {
+          item.classList.toggle("is-active", item.dataset.language === language);
+        });
+
+        document.documentElement.lang = language;
+        document.body.classList.toggle("site--ltr", language === "en");
+        heroTextContainer.dir = language === "he" ? "rtl" : "ltr";
+        heroTextContainer.style.textAlign = language === "he" ? "right" : "left";
+        hero.classList.toggle("hero--ltr", language === "en");
+        joinForm.dir = language === "he" ? "rtl" : "ltr";
+      }
 
       function applyJoinCopy(language) {
         const copy = translationContent[language];
@@ -1380,34 +1453,7 @@
 
       languageButtons.forEach((button) => {
         button.addEventListener("click", () => {
-          const language = button.dataset.language;
-          currentLanguage = language;
-
-          heroText.textContent = translationContent[language].hero;
-          heroSubtext.textContent = translationContent[language].heroSubtext;
-          ctaTitle.textContent = translationContent[language].ctaTitle;
-          ctaDescription.textContent = translationContent[language].ctaDescription;
-          appStoreBadge.src = appStoreBadges[language];
-          googlePlayBadge.src = googlePlayBadges[language];
-          applyDetailsCopy(language);
-          applyFooterCopy(language);
-          applyJoinCopy(language);
-
-          appStoreBadge.alt =
-            language === "he" ? "להורדה ב-App Store" : "Download on the App Store";
-          googlePlayBadge.alt =
-            language === "he" ? "זמין ב-Google Play" : "Get it on Google Play";
-
-          languageButtons.forEach((item) => {
-            item.classList.toggle("is-active", item === button);
-          });
-
-          document.documentElement.lang = language;
-          document.body.classList.toggle("site--ltr", language === "en");
-          heroTextContainer.dir = language === "he" ? "rtl" : "ltr";
-          heroTextContainer.style.textAlign = language === "he" ? "right" : "left";
-          hero.classList.toggle("hero--ltr", language === "en");
-          joinForm.dir = language === "he" ? "rtl" : "ltr";
+          applyLanguage(button.dataset.language);
         });
       });
 
@@ -1496,10 +1542,9 @@
         }
       });
 
-      applyDetailsCopy(currentLanguage);
-      applyFooterCopy(currentLanguage);
-      applyJoinCopy(currentLanguage);
-      hero.classList.remove("hero--ltr");
+      applyLanguage(currentLanguage);
+      prefillJoinFormFromUrl();
+      scrollJoinFormIntoViewIfRequested();
     </script>
   </body>
 </html>
