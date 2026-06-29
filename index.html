@@ -143,6 +143,7 @@
       }
 
       .hero {
+        position: relative;
         min-height: calc(100vh - 72px);
         width: 100vw;
         margin-left: calc(50% - 50vw);
@@ -152,24 +153,55 @@
         gap: 2.5rem;
         padding: 2rem max(32px, calc((100vw - 1200px) / 2 + 32px)) 4rem
           max(32px, calc((100vw - 1200px) / 2 + 7rem));
+        background: #6a3d17;
+        border-radius: 0 0 42px 42px;
+        overflow: hidden;
+      }
+
+      .hero > * {
+        position: relative;
+        z-index: 2;
+      }
+
+      .hero__media {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+      }
+
+      .hero__video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+        display: block;
+        filter: saturate(1.08) contrast(1.03) brightness(0.92);
+      }
+
+      .hero__scrim {
+        position: absolute;
+        inset: 0;
         background:
           linear-gradient(
             135deg,
-            rgba(16, 12, 9, 0.22) 0%,
-            rgba(16, 12, 9, 0.12) 35%,
-            rgba(16, 12, 9, 0.04) 100%
+            rgba(16, 12, 9, 0.42) 0%,
+            rgba(16, 12, 9, 0.24) 34%,
+            rgba(16, 12, 9, 0.14) 58%,
+            rgba(16, 12, 9, 0.22) 100%
           ),
-          url("assets/images/hero-background.jpg") center center / cover no-repeat;
-        border-radius: 0 0 42px 42px;
-        overflow: hidden;
+          radial-gradient(circle at 18% 44%, rgba(255, 162, 74, 0.18), transparent 32%),
+          linear-gradient(180deg, rgba(130, 68, 18, 0.12) 0%, rgba(130, 68, 18, 0.04) 100%);
       }
 
       .hero__text {
         direction: rtl;
         text-align: right;
         align-self: center;
+        justify-self: end;
         padding: 1.6rem 1.75rem;
         max-width: 34rem;
+        min-height: 15.5rem;
         border-radius: 28px;
         background:
           linear-gradient(
@@ -184,6 +216,7 @@
           inset 0 1px 0 rgba(255, 255, 255, 0.18),
           inset 0 18px 30px rgba(255, 255, 255, 0.05),
           0 24px 55px rgba(33, 17, 7, 0.2);
+        transform: translate(1.25rem, -1rem);
       }
 
       .hero__text p {
@@ -205,6 +238,14 @@
       .hero--ltr .hero__text {
         direction: ltr;
         text-align: left;
+        justify-self: start;
+        transform: translate(0.5rem, -1rem);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .hero__video {
+          animation: none;
+        }
       }
 
       .details-section {
@@ -850,10 +891,11 @@
         }
 
         .hero {
+          align-items: start;
           gap: 1.5rem;
           margin-left: calc(50% - 50vw);
-          padding: 1.5rem 1.25rem 2.5rem;
-          min-height: auto;
+          padding: 2.45rem 1.25rem 3rem;
+          min-height: 31.75rem;
         }
 
         .brand {
@@ -875,8 +917,18 @@
 
         .hero__text {
           text-align: center;
-          align-self: auto;
+          align-self: start;
+          justify-self: stretch;
           padding: 1.3rem 1.2rem;
+          min-height: 12.75rem;
+          transform: none;
+          margin-top: 0.8rem;
+        }
+
+        .hero--ltr .hero__text {
+          justify-self: stretch;
+          transform: none;
+          margin-top: 0.8rem;
         }
 
         .hero__text p {
@@ -885,6 +937,10 @@
 
         .hero__subtext {
           max-width: none;
+        }
+
+        .hero__video {
+          object-position: center 42%;
         }
 
         .details-section {
@@ -1068,6 +1124,20 @@
         </div>
       </header>
       <main class="hero" id="hero">
+        <div class="hero__media" aria-hidden="true">
+          <video
+            class="hero__video"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            poster="assets/images/hero-background.jpg"
+          >
+            <source src="assets/video/dishguru-hero.mp4" type="video/mp4" />
+          </video>
+          <div class="hero__scrim"></div>
+        </div>
         <div class="hero__text">
           <p id="hero-text">שוב לא יודעים מה להזמין לצהריים?</p>
           <div class="hero__subtext" id="hero-subtext">
