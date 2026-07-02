@@ -1504,6 +1504,7 @@
 
       const joinQueryParams = new URLSearchParams(window.location.search);
       const requestedLanguageFromUrl = joinQueryParams.get("lang");
+      let hasTrackedJoinFormInteraction = false;
       let currentLanguage =
         requestedLanguageFromUrl === "en" || requestedLanguageFromUrl === "he"
           ? requestedLanguageFromUrl
@@ -1550,6 +1551,27 @@
         window.setTimeout(scrollToJoin, 900);
         window.addEventListener("load", scrollToJoin, { once: true });
         window.addEventListener("pageshow", scrollToJoin, { once: true });
+      }
+
+      function trackAnalyticsEvent(eventName, eventParams = {}) {
+        if (typeof window.gtag !== "function") {
+          return;
+        }
+
+        window.gtag("event", eventName, eventParams);
+      }
+
+      function trackJoinFormInteraction(fieldName) {
+        if (hasTrackedJoinFormInteraction) {
+          return;
+        }
+
+        hasTrackedJoinFormInteraction = true;
+        trackAnalyticsEvent("join_form_interaction", {
+          form_name: "join_form",
+          language: currentLanguage,
+          field_name: fieldName
+        });
       }
 
       function applyLanguage(language) {
@@ -1690,7 +1712,13 @@
       });
 
       fieldConfigs.forEach((fieldConfig) => {
+        fieldConfig.input.addEventListener("focus", () => {
+          trackJoinFormInteraction(fieldConfig.key);
+        });
+
         fieldConfig.input.addEventListener("input", () => {
+          trackJoinFormInteraction(fieldConfig.key);
+
           if (fieldConfig.input.classList.contains("is-invalid")) {
             validateField(fieldConfig);
           }
@@ -1700,9 +1728,24 @@
       joinForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
+        trackAnalyticsEvent("join_form_submit_attempt", {
+          form_name: "join_form",
+          language: currentLanguage
+        });
+
         const isValid = fieldConfigs.every((fieldConfig) => validateField(fieldConfig));
 
         if (!isValid) {
+          const invalidFields = fieldConfigs
+            .filter((fieldConfig) => fieldConfig.input.classList.contains("is-invalid"))
+            .map((fieldConfig) => fieldConfig.key);
+
+          trackAnalyticsEvent("join_form_validation_error", {
+            form_name: "join_form",
+            language: currentLanguage,
+            invalid_fields: invalidFields.join(",")
+          });
+
           joinSuccess.classList.remove("is-visible");
           joinSuccess.textContent = "";
           return;
@@ -1728,6 +1771,13 @@
           const data = await response.json();
 
           if (!response.ok) {
+            trackAnalyticsEvent("join_form_submit_error", {
+              form_name: "join_form",
+              language: currentLanguage,
+              error_field: data && data.field ? data.field : "",
+              error_type: "response_error"
+            });
+
             const fieldConfig = fieldConfigs.find((field) => field.key === data.field);
 
             if (fieldConfig && data.message) {
@@ -1743,11 +1793,21 @@
             return;
           }
 
+          trackAnalyticsEvent("join_form_submit_success", {
+            form_name: "join_form",
+            language: currentLanguage
+          });
           joinSuccess.textContent = translationContent[currentLanguage].success;
           joinSuccess.classList.add("is-visible");
           joinForm.reset();
           fieldConfigs.forEach(clearFieldError);
+          hasTrackedJoinFormInteraction = false;
         } catch {
+          trackAnalyticsEvent("join_form_submit_error", {
+            form_name: "join_form",
+            language: currentLanguage,
+            error_type: "network_error"
+          });
           joinSuccess.textContent = translationContent[currentLanguage].submitError;
           joinSuccess.classList.add("is-visible");
         }
